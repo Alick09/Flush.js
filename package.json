@@ -1,0 +1,38 @@
+{
+  "name": "flush-js",
+  "version": "1.0.0",
+  "description": "Automatization processes for retrying unsuccessful (bad connection) requests",
+  "main": "src/flush.js",
+  "scripts": {
+    "test": "echo \"No test specified\"",
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alick09/Flush.js.git"
+  },
+  "keywords": [
+    "frontend",
+    "request",
+    "jquery",
+    "flush",
+    "connection",
+    "timeout"
+  ],
+  "author": "Abdulla Gaibullaev",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Alick09/Flush.js/issues"
+  },
+  "homepage": "https://github.com/Alick09/Flush.js#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.8.6",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^2.0.0"
+  },
+  "dependencies": {}
+}
