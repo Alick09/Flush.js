@@ -8,12 +8,14 @@
     color: white;
     margin: 10px;
     width: 300px;
+    height: 65px;
     transition: 0.2s;
     box-sizing: border-box;
 }
 
 .request-sender:hover {
     transform: scale(1.05);
+    cursor: pointer;
 }
 
 .flush-button {
@@ -40,7 +42,7 @@
 
 .request-sender.loading { background: black; }
 .request-sender.success { background: linear-gradient(45deg, #00426f, #008304); }
-.request-sender.error { border: 10px #a70000 solid; }
+.request-sender.error { border: 10px #a70000 solid; padding: 10px 20px; }
 
 
 @keyframes pulsing {

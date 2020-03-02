@@ -1,19 +1,73 @@
-<div align="center">
+<p align="center">
   <a href="https://github.com/Alick09/Flush.js">
-    <img width="200" height="200" src="https://raw.githubusercontent.com/Alick09/Flush.js/master/misc/logo.png">
+    <img width="200" height="200" src="misc/logo.png">
   </a>
-  <br>
   <p align="center">Automatization of collecting and repeating failed requests</p>
-  <br>
-
-</div>
+</p>
 
 [![NPM version][npm-image]][npm-url]
 
 ## What is Flush.js
 
-Flush.js is a system which allows you to automatically collect all failed requests and then repeat all of them by single method.
+Flush.js is a system which allows you to automatically collect all failed requests and then repeat all of them by single method. 
 
+
+## How it works
+
+Here is animation of how this tool can be used. Red borders means error (request cancelled), green card - successful response from the server and black - waiting for response. You can clone this repository and check out the demo to understand process better.
+
+<img src="misc/demo.gif" alt="Work animation" style="width:200px;max-width:200px;"/>
+
+
+## Requirements
+
+This tool uses **jquery** functions. So you need to include jquery before using this tool.
+
+
+## Installation
+
+You can use this tool using npm or just by downloading script and linking to the project.
+
+For the first way you need to follow next steps:
+
+- install the package using command `npm install flush-js --save-dev`
+- use it inside you project like this: `var FlushJS = require('flush-js')`
+
+
+For the second way you need to do:
+
+- download `dist/flush.min.js` to your project
+- include it using something like `<script type="text/javascript" src="../dist/flush.min.js"></script>`
+
+
+## Usage
+
+Here is very simple code of **Flush.js** usage.
+
+```js
+$('.request-sender').click(function(){
+    FlushJS.send({
+        url: "http://httpbin.org/get",
+        method: 'GET'
+    });
+});
+
+var $flushBtn = $(".flush-button");
+FlushJS.onChange = function(e){
+    $flushBtn.text(e.queueLength);
+}
+
+$flushBtn.click(function(e){
+    FlushJS.flush()
+})
+```
+
+- First 6 lines for setup click handlers. It's just a request send in jquery-ajax style. The only defference is that you must use **FlushJS** instead of **$**. So all failed requests will go to special queue.
+- Next block makes interface a little responsive. Button for flushing contains number of failed requests and these lines just update this value.
+- Last block of code just makes flush button work.
+
+
+See demo. There you can find more complex and realistic usage.
 
 
 [npm-url]: https://www.npmjs.com/package/flush-js
