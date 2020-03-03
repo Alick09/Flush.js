@@ -79,7 +79,6 @@ window.FlushJS = (function(){
         queueLength: function() { return queue.length; },
 
         onChange: function(event) {},
-        beforeFlush: function() {},
 
         send: function(params){
             if (flushingNow) return;

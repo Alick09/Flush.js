@@ -70,6 +70,23 @@ $flushBtn.click(function(e){
 See demo. There you can find more complex and realistic usage.
 
 
+## Additional properties, methods and handlers
+
+- `timeout` - integer, milliseconds, 1000 by default. Change it if you want to work with slower or faster requests.
+
+- `checkProblemIsConnection(xhr, status)` - useful function. Use it in **complete** or **error** methods when you call _FlushJS.send_ to understand will this request be lost or not.
+
+- `queueLength()` - method which returns length of the queue.
+
+- `onChange(e)` - change handler. Set it up (see demo) to make interface more responsive. event has multiple.
+
+---
+
+- `send(request)` - main method to make a request. Argument structure the same as in jQuery.ajax method.
+
+- `flush()` - main method to repeat all failed requests.
+
+
 [downloads-image]: https://img.shields.io/npm/dm/flush-js.svg
 [npm-url]: https://www.npmjs.com/package/flush-js
 [npm-image]: https://img.shields.io/npm/v/flush-js.svg

@@ -24,6 +24,7 @@ $(()=>{
     var $flushBtn = $(".flush-button");
     FlushJS.onChange = function(e){
         $flushBtn.toggleClass('hidden', e.queueLength == 0);
+        $flushBtn.toggleClass('loading', e.flushing);
         $flushBtn.text(e.queueLength);
         if (e.queueLength == 0){
             $flushBtn.removeClass('loading');
@@ -33,6 +34,4 @@ $(()=>{
     $flushBtn.click(function(e){
         FlushJS.flush()
     })
-
-    FlushJS.beforeFlush = function(){ $flushBtn.addClass('loading'); }
 })
