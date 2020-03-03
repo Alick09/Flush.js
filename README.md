@@ -5,7 +5,7 @@
   <p align="center">Automatization of collecting and repeating failed requests</p>
 </p>
 
-[![NPM version][npm-image]][npm-url]
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url]
 
 ## What is Flush.js
 
@@ -70,5 +70,6 @@ $flushBtn.click(function(e){
 See demo. There you can find more complex and realistic usage.
 
 
+[downloads-image]: https://img.shields.io/npm/dm/flush-js.svg
 [npm-url]: https://www.npmjs.com/package/flush-js
 [npm-image]: https://img.shields.io/npm/v/flush-js.svg

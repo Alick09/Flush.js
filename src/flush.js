@@ -10,18 +10,16 @@ window.FlushJS = (function(){
     var queue = [];
     var flushingNow = false;
 
-    function makeRequestBullet(options, timeout, addToQueueMethod){
-        function checkProblemIsConnection(jqXHR, status){
-            return (status == "timeout" || jqXHR.readyState == 0);
-        }
+    function checkProblemIsConnection(jqXHR, status){
+        return (status == "timeout" || jqXHR.readyState == 0);
+    }
 
+    function makeRequestBullet(options, timeout, addToQueueMethod){
         options.timeout = timeout;
-        options.actualComplete_ = options.complete;
-        options.actualComplete = function(jqXHR, status){
-            if (typeof options.actualComplete_ === 'function'){
-                options.actualComplete_(jqXHR, status);
-            }
-        };
+
+        if (!options.hasOwnProperty('actualComplete')){
+            options.actualComplete = (typeof options.complete === 'function' ? options.complete : function(a, b){});
+        }
         options.complete = function(jqXHR, status){
             if (checkProblemIsConnection(jqXHR, status)){
                 addToQueueMethod(makeRequestBullet(options, timeout, addToQueueMethod));
@@ -30,16 +28,8 @@ window.FlushJS = (function(){
             }
         };
 
-        options.actualError = options.error;
-        options.error = function(jqXHR, status, error){
-            if (typeof options.actualError === 'function' && !checkProblemIsConnection(jqXHR, status)){
-                options.actualError(jqXHR, status, error);
-            }
-        }
-
         return {
             options: options,
-            checkProblemIsConnection: checkProblemIsConnection,
             buildOptions(completeFunc){
                 var oldOptions = {};
                 Object.assign(oldOptions, this.options);
@@ -85,6 +75,7 @@ window.FlushJS = (function(){
 
     return {
         timeout: 1000*3,
+        checkProblemIsConnection: checkProblemIsConnection,
         queueLength: function() { return queue.length; },
 
         onChange: function(event) {},
@@ -112,7 +103,7 @@ window.FlushJS = (function(){
                     endFunc();
                 } else {
                     queue[0].runSeq(function (jqXHR, status) {
-                        if (queue[0].checkProblemIsConnection(jqXHR, status)){
+                        if (checkProblemIsConnection(jqXHR, status)){
                             endFunc();
                             self.onChange(makeEvent())
                         } else {
