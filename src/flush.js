@@ -11,15 +11,35 @@ window.FlushJS = (function(){
     var flushingNow = false;
 
     function makeRequestBullet(options, timeout, addToQueueMethod){
+        function checkProblemIsConnection(jqXHR, status){
+            return (status == "timeout" || jqXHR.readyState == 0);
+        }
+
         options.timeout = timeout;
+        options.actualComplete_ = options.complete;
+        options.actualComplete = function(jqXHR, status){
+            if (typeof options.actualComplete_ === 'function'){
+                options.actualComplete_(jqXHR, status);
+            }
+        };
         options.complete = function(jqXHR, status){
-            if (status == "timeout" || jqXHR.readyState == 0){
+            if (checkProblemIsConnection(jqXHR, status)){
                 addToQueueMethod(makeRequestBullet(options, timeout, addToQueueMethod));
+            } else {
+                options.actualComplete(jqXHR, status);
             }
         };
 
+        options.actualError = options.error;
+        options.error = function(jqXHR, status, error){
+            if (typeof options.actualError === 'function' && !checkProblemIsConnection(jqXHR, status)){
+                options.actualError(jqXHR, status, error);
+            }
+        }
+
         return {
             options: options,
+            checkProblemIsConnection: checkProblemIsConnection,
             buildOptions(completeFunc){
                 var oldOptions = {};
                 Object.assign(oldOptions, this.options);
@@ -48,9 +68,17 @@ window.FlushJS = (function(){
     }
 
     function makeEvent(lengthBeforeFlush){
+        if (!makeEvent.hasOwnProperty('previousFlushingStatus')){
+            makeEvent.previousFlushingStatus = false;
+        }
+
+        var previousFlushing = makeEvent.previousFlushingStatus;
+        makeEvent.previousFlushingStatus = flushingNow;
+
         return {
             queueLength: queue.length,
             flushing: flushingNow,
+            previousFlushing: previousFlushing,
             lengthBeforeFlush: lengthBeforeFlush
         }
     }
@@ -60,7 +88,6 @@ window.FlushJS = (function(){
         queueLength: function() { return queue.length; },
 
         onChange: function(event) {},
-        cantFlush: function(){ console.log("Can't flush.") },
         beforeFlush: function() {},
 
         send: function(params){
@@ -85,13 +112,13 @@ window.FlushJS = (function(){
                     endFunc();
                 } else {
                     queue[0].runSeq(function (jqXHR, status) {
-                        if (status == 'success') {
-                            queue.splice(0, 1);
+                        if (queue[0].checkProblemIsConnection(jqXHR, status)){
+                            endFunc();
+                            self.onChange(makeEvent())
+                        } else {
+                            queue.splice(0, 1)[0].options.actualComplete(jqXHR, status);
                             reqChainRun(overall, i + 1, endFunc);
                             self.onChange(makeEvent(overall));
-                        } else {
-                            self.cantFlush();
-                            endFunc();
                         }
                     });
                 }
