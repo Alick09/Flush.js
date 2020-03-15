@@ -93,7 +93,6 @@ window.FlushJS = (function(){
         flush: function(){
             var self = this;
             if (flushingNow) return;
-            self.beforeFlush();
             flushingNow = true;
 
             function reqChainRun(overall, i, endFunc){
